@@ -1,0 +1,13 @@
+sudo: required
+
+jobs:
+  include:
+    - stage: build docker image
+      script:
+        - docker build -t znc .
+        - docker tag znc $DOCKER_USERNAME/znc
+      after_success:
+        - if [ "$TRAVIS_BRANCH" == "master" ]; then
+          docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+          docker push $DOCKER_USERNAME/znc;
+          fi
